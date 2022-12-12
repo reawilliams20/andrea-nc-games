@@ -38,14 +38,6 @@ describe('/api/categories', () => {
             })
         })
     });
-    test('404: route not found', () => {
-        return request(app)
-        .get('/api/categorie/')
-        .expect(404)
-        .then(({body : {msg}}) => {
-            expect(msg).toBe("path not found");
-        })
-    })
 });
 
 describe('/api/reviews', () => {
@@ -75,12 +67,4 @@ describe('/api/reviews', () => {
             })
         })
     });
-    test('404: route not found', () => {
-        return request(app)
-        .get('/api/review/')
-        .expect(404)
-        .then(({body : {msg}}) => {
-            expect(msg).toBe("path not found");
-        })
-    })
 });

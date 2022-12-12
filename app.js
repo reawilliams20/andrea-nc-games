@@ -5,7 +5,6 @@ const { getReviews } = require("./controllers/controllers.reviews");
 const {handle404Routes} = require("./controllers/controllers.errors");
 
 const app = express();
-app.use(express.json());
 
 app.get('/api/categories', getCategories);
 app.get('/api/reviews', getReviews);
