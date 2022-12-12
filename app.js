@@ -9,6 +9,7 @@ const app = express();
 app.use(express.json());
 
 app.get('/api/categories', getCategories);
+app.get('/api/reviews', getReviews);
 app.all('*', handle404Routes);
 
 module.exports = app;
