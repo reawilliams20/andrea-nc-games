@@ -8,6 +8,8 @@ const app = express();
 
 app.get('/api/categories', getCategories);
 app.get('/api/reviews', getReviews);
+
+
 app.all('*', handle404Routes);
 
 module.exports = app;
