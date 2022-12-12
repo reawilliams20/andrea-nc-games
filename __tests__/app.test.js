@@ -38,12 +38,33 @@ describe('/api/categories', () => {
             })
         })
     });
-    test('404: route not found', () => {
+});
+
+describe('/api/reviews', () => {
+    test('200: OK, returns with reviews', () => {
         return request(app)
-        .get('/api/categorie/')
-        .expect(404)
-        .then(({body : {msg}}) => {
-            expect(msg).toBe("path not found");
+        .get('/api/reviews')
+        .expect(200)
+        .then(({body : {reviews}}) => {
+            expect(reviews).toBeInstanceOf(Array);
+            expect(reviews).toHaveLength(13);
+            expect(reviews).toBeSortedBy('created_at', { descending: true });
+            reviews.forEach((review) => {
+                expect(review).toEqual(
+                    expect.objectContaining({
+                        review_id: expect.any(Number),
+                        title: expect.any(String),
+                        designer: expect.any(String),
+                        owner: expect.any(String),
+                        review_img_url: expect.any(String),
+                        review_body: expect.any(String),
+                        category: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        comment_count: expect.any(String)
+                    })
+                )
+            })
         })
-    })
+    });
 });
