@@ -10,3 +10,15 @@ exports.selectReviews = () => {
         return result.rows;
     })
 }
+
+exports.selectReview = (review_id) => {
+    return db.query(`
+    SELECT * FROM reviews
+    WHERE review_id = $1;`, [review_id])
+    .then((result) => {
+        if (result.rowCount === 0 ){
+            return Promise.reject({status: 404, msg: 'Not found'})
+        }
+        return result.rows[0]
+    })
+}
