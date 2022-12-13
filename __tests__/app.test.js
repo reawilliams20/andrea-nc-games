@@ -116,7 +116,6 @@ describe('/api/reviews/:review_id', () => {
         .get(`/api/reviews/${review_id}/comments`)
         .expect(200)
         .then(({body: {comments}}) => {
-            expect(comments).toBeInstanceOf(Array);
             expect(comments).toHaveLength(3);
             expect(comments).toBeSortedBy('created_at', { ascending: true });
             comments.forEach((comment) => {
@@ -138,7 +137,6 @@ describe('/api/reviews/:review_id', () => {
         .get('/api/reviews/1/comments')
         .expect(200)
         .then(({body: {comments}}) => {
-            expect(comments).toBeInstanceOf(Array);
             expect(comments).toHaveLength(0);
             comments.forEach((comment) => {
                 expect(comment).toEqual(
