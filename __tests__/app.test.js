@@ -105,8 +105,8 @@ describe('/api/reviews/:review_id', () => {
             const msg = response.body.msg
             expect(msg).toBe('bad request')
         })
-    });
-  });
+    })
+});
 
 
   describe("GET /api/reviews/:review_id/comments", () => {
@@ -131,21 +131,16 @@ describe('/api/reviews/:review_id', () => {
                 )
             })
         })
-    })
+    });
     test('200: valid id but no comments for it, responds with empty array', () => {
         return request(app)
         .get('/api/reviews/1/comments')
         .expect(200)
         .then(({body: {comments}}) => {
             expect(comments).toHaveLength(0);
-            comments.forEach((comment) => {
-                expect(comment).toEqual(
-                    expect.objectContaining({
-                })
-                )
+            expect(comments).toEqual([]);
             })
-        })
-    });
+        });
     test('404: valid id but not found, responds with 404 error message', () => {
         return request(app)
         .get('/api/reviews/999/comments')
@@ -164,4 +159,66 @@ describe('/api/reviews/:review_id', () => {
             expect(msg).toBe('bad request')
         })
     });
-  })
+})
+
+describe("POST /api/reviews/:review_id/comments", () => {
+    test("201: created, responds with newly created comment for specified review_id", () => {
+        const review_id = 1;
+        return request(app)
+        .post(`/api/reviews/${review_id}/comments`)
+        .expect(201)
+        .send({
+            "body": "some text...",
+            "username": "mallionaire"
+        })
+        .then(({body: {comment}}) => {
+            const newComment = comment
+            expect(newComment).toEqual(
+                expect.objectContaining({
+                  comment_id: 7,
+                  body: "some text...",
+                  review_id: review_id,
+                  "author": "mallionaire",
+                  "votes": 0,
+                  created_at: expect.any(String)
+                
+              })
+            )
+        })
+    });
+    test('400: missing keys', () => {
+        const review_id = 1;
+        return request(app)
+        .post(`/api/reviews/${review_id}/comments`)
+        .send({})
+        .expect(400)
+        .send((response) => {
+            const msg = response.body.msg
+            expect(msg).toBe('invalid/missing key in request')
+        })
+    });
+    test('400: invalid key', () => {
+        const review_id = 1;
+        return request(app)
+        .post(`/api/reviews/${review_id}/comments`)
+        .send({"body": 555,
+        "username": "mallionaire"})
+        .expect(400)
+        .send((response) => {
+            const msg = response.body.msg
+            expect(msg).toBe('invalid/missing key in request')
+        })
+    });
+    test('400: other property on request body', () => {
+        const review_id = 1;
+        return request(app)
+        .post(`/api/reviews/${review_id}/comments`)
+        .send({"body": "test body",
+        "other-property": "mallionaire"})
+        .expect(400)
+        .send((response) => {
+            const msg = response.body.msg
+            expect(msg).toBe('bad request')
+        })
+    });
+})
