@@ -75,7 +75,6 @@ describe('/api/reviews/:review_id', () => {
         .get(`/api/reviews/${review_id}`)
         .expect(200)
         .then(({body: {review}}) => {
-            expect(review).toBeInstanceOf(Object);
             expect(review).toMatchObject({
                     review_id: review_id,
                     title: 'Jenga',
