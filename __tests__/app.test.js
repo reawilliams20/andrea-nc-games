@@ -116,7 +116,6 @@ describe('/api/reviews/:review_id', () => {
         .get(`/api/reviews/${review_id}/comments`)
         .expect(200)
         .then(({body: {comments}}) => {
-            console.log(comments)
             expect(comments).toBeInstanceOf(Array);
             expect(comments).toHaveLength(3);
             expect(comments).toBeSortedBy('created_at', { ascending: true });
@@ -128,15 +127,30 @@ describe('/api/reviews/:review_id', () => {
                         created_at: expect.any(String),
                         author: expect.any(String),
                         body: expect.any(String),
-                        review_id: expect.any(Number)
+                        review_id: review_id
                 })
                 )
             })
         })
     })
-    test('404: valid id but no comments for it, responds with 404 error message', () => {
+    test('200: valid id but no comments for it, responds with empty array', () => {
         return request(app)
         .get('/api/reviews/1/comments')
+        .expect(200)
+        .then(({body: {comments}}) => {
+            expect(comments).toBeInstanceOf(Array);
+            expect(comments).toHaveLength(0);
+            comments.forEach((comment) => {
+                expect(comment).toEqual(
+                    expect.objectContaining({
+                })
+                )
+            })
+        })
+    });
+    test('404: valid id but not found, responds with 404 error message', () => {
+        return request(app)
+        .get('/api/reviews/999/comments')
         .expect(404)
         .then((response) => {
             const msg = response.body.msg

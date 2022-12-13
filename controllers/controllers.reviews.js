@@ -23,8 +23,9 @@ exports.getReview = (req, res, next) => {
 
 exports.getReviewComments = (req, res, next) => {
     const review_id = req.params.review_id
-    selectReviewComments(review_id)
-    .then((comments) => {
+    const promises = [selectReviewComments(review_id), selectReview(review_id)]
+    Promise.all(promises)
+    .then(([comments]) => {
         res.status(200).send({comments})
     })
     .catch((err) => {

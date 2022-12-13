@@ -1,9 +1,6 @@
 const express = require("express");
-
 const {getCategories} = require("./controllers/controllers.categories")
-
 const {getReviews, getReview, getReviewComments} = require("./controllers/controllers.reviews");
-
 const {handle404Routes, handle400Error, handle500Error} = require("./error-handling")
 
 const app = express();
