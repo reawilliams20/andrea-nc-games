@@ -107,3 +107,61 @@ describe('/api/reviews/:review_id', () => {
         })
     });
   });
+
+
+  describe("GET /api/reviews/:review_id/comments", () => {
+    test('200: responds with corresponding comments of given review_id', () => {
+        const review_id = 3;
+        return request(app)
+        .get(`/api/reviews/${review_id}/comments`)
+        .expect(200)
+        .then(({body: {comments}}) => {
+            expect(comments).toHaveLength(3);
+            expect(comments).toBeSortedBy('created_at', { ascending: true });
+            comments.forEach((comment) => {
+                expect(comment).toEqual(
+                    expect.objectContaining({
+                        comment_id: expect.any(Number),
+                        votes: expect.any(Number),
+                        created_at: expect.any(String),
+                        author: expect.any(String),
+                        body: expect.any(String),
+                        review_id: review_id
+                })
+                )
+            })
+        })
+    })
+    test('200: valid id but no comments for it, responds with empty array', () => {
+        return request(app)
+        .get('/api/reviews/1/comments')
+        .expect(200)
+        .then(({body: {comments}}) => {
+            expect(comments).toHaveLength(0);
+            comments.forEach((comment) => {
+                expect(comment).toEqual(
+                    expect.objectContaining({
+                })
+                )
+            })
+        })
+    });
+    test('404: valid id but not found, responds with 404 error message', () => {
+        return request(app)
+        .get('/api/reviews/999/comments')
+        .expect(404)
+        .then((response) => {
+            const msg = response.body.msg
+            expect(msg).toBe('Not found')
+        })
+    });
+    test('400: invalid id, responds with 400 error message', () => {
+        return request(app)
+        .get(`/api/reviews/review3/comments`)
+        .expect(400)
+        .then((response) => {
+            const msg = response.body.msg
+            expect(msg).toBe('bad request')
+        })
+    });
+  })
