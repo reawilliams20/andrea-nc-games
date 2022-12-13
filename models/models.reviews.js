@@ -22,3 +22,16 @@ exports.selectReview = (review_id) => {
         return result.rows[0]
     })
 }
+
+exports.selectReviewComments = (review_id) => {
+    return db.query(`
+    SELECT * FROM comments
+    WHERE review_id = $1
+    ORDER BY created_at ASC;`, [review_id])
+    .then((result) => {
+        if (result.rowCount === 0 ){
+            return Promise.reject({status: 404, msg: 'Not found'})
+        }
+        return result.rows
+    })
+}
