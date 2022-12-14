@@ -186,6 +186,32 @@ describe("POST /api/reviews/:review_id/comments", () => {
             )
         })
     });
+    test("201: created, ignoring extra properties", () => {
+        const review_id = 1;
+        return request(app)
+        .post(`/api/reviews/${review_id}/comments`)
+        .expect(201)
+        .send({
+            "body": "some text...",
+            "username": "mallionaire",
+            "review_id": 2,
+            "votes": 3
+        })
+        .then(({body: {comment}}) => {
+            const newComment = comment
+            expect(newComment).toEqual(
+                expect.objectContaining({
+                  comment_id: 7,
+                  body: "some text...",
+                  review_id: review_id,
+                  "author": "mallionaire",
+                  "votes": 0,
+                  created_at: expect.any(String)
+                
+              })
+            )
+        })
+    });
     test('400: missing keys', () => {
         const review_id = 1;
         return request(app)
@@ -221,4 +247,26 @@ describe("POST /api/reviews/:review_id/comments", () => {
             expect(msg).toBe('bad request')
         })
     });
+    test('404: valid id but does not exist, responds with 404 error message', () => {
+        return request(app)
+        .post('/api/reviews/333/comments')
+        .send({"body": "here is a comment",
+        "username": "mallionaire"})
+        .expect(404)
+        .then((response) => {
+            const msg = response.body.msg
+            expect(msg).toBe('Not found')
+        })
+    });
+    test('400: invalid id, responds with 400 error message', () => {
+        return request(app)
+        .post('/api/reviews/game52/comments')
+        .send({"body": "here is a comment",
+        "username": "mallionaire"})
+        .expect(400)
+        .then((response) => {
+            const msg = response.body.msg
+            expect(msg).toBe('bad request')
+        })
+    })
 })

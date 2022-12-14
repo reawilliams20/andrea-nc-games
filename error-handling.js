@@ -15,6 +15,16 @@ const handle400Error = (err, req, res, next) => {
     }
 };
 
+//handles sql query error for 404
+const handle404Error = (err, req, res, next) => {
+    if (err.code === '23503'){
+        res.status(404).send({msg: 'Not found'});
+    }
+    else{
+        next(err);
+    }
+}
+
 //handles promise reject to send back status and message
 const handle500Error = (err, req, res, next) => {
     if(err.msg !== undefined){
@@ -25,4 +35,4 @@ const handle500Error = (err, req, res, next) => {
     }
 };
 
-module.exports = {handle404Routes, handle400Error, handle500Error}
+module.exports = {handle404Routes, handle400Error, handle500Error, handle404Error}

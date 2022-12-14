@@ -1,7 +1,7 @@
 const express = require("express");
 const {getCategories} = require("./controllers/controllers.categories")
 const {getReviews, getReview, getReviewComments,postComment} = require("./controllers/controllers.reviews");
-const {handle404Routes, handle400Error, handle500Error} = require("./error-handling")
+const {handle404Routes, handle400Error, handle500Error, handle404Error} = require("./error-handling")
 
 const app = express();
 
@@ -18,6 +18,7 @@ app.post('/api/reviews/:review_id/comments', postComment);
 
 app.use(handle400Error);
 app.use(handle500Error);
+app.use(handle404Error);
 app.all('*', handle404Routes);
 
 
