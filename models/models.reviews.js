@@ -27,8 +27,19 @@ exports.selectReviewComments = (review_id) => {
     return db.query(`
     SELECT * FROM comments
     WHERE review_id = $1
-    ORDER BY created_at ASC;`, [review_id])
+    ORDER BY created_at DESC;`, [review_id])
     .then((result) => {
         return result.rows
     })
 }
+
+exports.insertComment = (newComment, review_id) => {
+    const {body, username} = newComment;
+    return db.query(`
+    INSERT INTO comments
+    (body, author, review_id)
+    VALUES
+    ($1, $2, $3) 
+    RETURNING *;`, [body, username, review_id]).
+    then((result) => {return result.rows[0]})
+};
