@@ -117,7 +117,7 @@ describe('/api/reviews/:review_id', () => {
         .expect(200)
         .then(({body: {comments}}) => {
             expect(comments).toHaveLength(3);
-            expect(comments).toBeSortedBy('created_at', { ascending: true });
+            expect(comments).toBeSortedBy('created_at', { descending: true });
             comments.forEach((comment) => {
                 expect(comment).toEqual(
                     expect.objectContaining({
