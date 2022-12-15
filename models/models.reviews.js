@@ -34,8 +34,12 @@ exports.selectReviews = (category, sort_by="created_at", order="desc") => {
 
 exports.selectReview = (review_id) => {
     return db.query(`
-    SELECT * FROM reviews
-    WHERE review_id = $1;`, [review_id])
+    SELECT reviews.review_id, title, designer, owner, review_img_url, review_body, category, reviews.created_at, reviews.votes, 
+    COUNT(comments.review_id) AS comment_count 
+    FROM reviews
+    LEFT JOIN comments ON comments.review_id = reviews.review_id
+    WHERE reviews.review_id = $1
+    GROUP BY reviews.review_id;`, [review_id])
     .then((result) => {
         if (result.rowCount === 0 ){
             return Promise.reject({status: 404, msg: 'Not found'})
