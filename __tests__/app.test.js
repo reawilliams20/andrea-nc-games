@@ -505,3 +505,28 @@ describe('GET /api/reviews QUERIES', () => {
     })
     
 })
+
+describe("DELETE /api/comments/:comment_id", () => {
+    test("204: deletes comment, responds with no content", () => {
+        const comment_id = 1
+        return request(app)
+        .delete(`/api/comments/${comment_id}`)
+        .expect(204)
+    })
+    test('status:400, returns bad request when id is not valid', () => {
+        return request(app)
+        .delete('/api/comments/example')
+        .expect(400)
+        .then(( { body } ) => {
+            expect(body.msg).toBe("bad request")
+        })
+    })
+    test("status:404, returns not found when comment id is valid but doesn't exist", () => {
+        return request(app)
+        .delete('/api/comments/999')
+        .expect(404)
+        .then(( { body } ) => {
+            expect(body.msg).toBe("Not found")
+        })
+    })
+})
