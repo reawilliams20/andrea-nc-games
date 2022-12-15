@@ -25,7 +25,6 @@ describe('/api/categories', () => {
         .get('/api/categories')
         .expect(200)
         .then(({body : {categories}}) => {
-            expect(categories).toBeInstanceOf(Array);
             expect(categories).toHaveLength(4);
             categories.forEach((category) => {
                 expect(category).toEqual(
@@ -45,7 +44,6 @@ describe('/api/reviews', () => {
         .get('/api/reviews')
         .expect(200)
         .then(({body : {reviews}}) => {
-            expect(reviews).toBeInstanceOf(Array);
             expect(reviews).toHaveLength(13);
             expect(reviews).toBeSortedBy('created_at', { descending: true });
             reviews.forEach((review) => {
@@ -269,4 +267,133 @@ describe("POST /api/reviews/:review_id/comments", () => {
             expect(msg).toBe('bad request')
         })
     })
+})
+
+
+describe("PATCH /api/reviews/:review_id", () => {
+    test('200: responds with newly updated review', () => {
+        const review_id = 1
+        return request(app)
+        .patch(`/api/reviews/${review_id}`)
+        .send({inc_votes : 1})
+        .expect(200)
+        .then(({body: {review}}) => {
+            const updatedReview = review
+            expect(updatedReview).toEqual(
+                expect.objectContaining({
+                    review_id: review_id,
+                    title: "Agricola",
+                    designer: "Uwe Rosenberg",
+                    owner: "mallionaire",
+                    review_img_url: 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+                    review_body: "Farmyard fun!",
+                    category: 'euro game',
+                    created_at: "2021-01-18T10:00:20.514Z",
+                    votes: 2
+                })
+            )
+        });
+    });
+    test('200: responds with newly updated review, ignoring extra properties', () => {
+        const review_id = 1
+        return request(app)
+        .patch(`/api/reviews/${review_id}`)
+        .send({
+            inc_votes: 1,
+            owner: "new owner"
+        })
+        .expect(200)
+        .then(({body: {review}}) => {
+            const updatedReview = review
+            expect(updatedReview).toEqual(
+                expect.objectContaining({
+                    review_id: review_id,
+                    title: "Agricola",
+                    designer: "Uwe Rosenberg",
+                    owner: "mallionaire",
+                    review_img_url: 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+                    review_body: "Farmyard fun!",
+                    category: 'euro game',
+                    created_at: "2021-01-18T10:00:20.514Z",
+                    votes: 2
+                })
+            )
+        });
+    });
+    test('200: responds with newly updated review, negative inc_votes value', () => {
+        const review_id = 2
+        return request(app)
+        .patch(`/api/reviews/${review_id}`)
+        .send({inc_votes: -1})
+        .expect(200)
+        .then(({body: {review}}) => {
+            const updatedReview = review
+            expect(updatedReview).toEqual(
+                expect.objectContaining({
+                    review_id: review_id,
+                    title: 'Jenga',
+                    designer: 'Leslie Scott',
+                    owner: 'philippaclaire9',
+                    review_img_url: 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+                    review_body: 'Fiddly fun for all the family',
+                    category: 'dexterity',
+                    created_at: "2021-01-18T10:01:41.251Z",
+                    votes: 4
+                })
+            )
+        });
+    });
+    test('404: valid id but does not exist, respond appropriately', () => {
+        return request(app)
+        .patch('/api/reviews/77')
+        .send({inc_votes: 1})
+        .expect(404)
+        .then((response) => {
+            const msg = response.body.msg
+            expect(msg).toBe('Not found')
+        })
+    });
+    test('400: invalid id, respond appropriately', () => {
+        return request(app)
+        .patch('/api/reviews/game400')
+        .send({inc_votes: 50})
+        .expect(400)
+        .then((response) => {
+            const msg = response.body.msg
+            expect(msg).toBe('bad request')
+        })
+    });
+    test('400: missing keys', () => {
+        return request(app)
+        .patch('/api/reviews/3')
+        .send({})
+        .expect(400)
+        .send((response) => {
+            const msg = response.body.msg
+            expect(msg).toBe('bad request')
+        })
+    });
+    test('400: invalid key', () => {
+        return request(app)
+        .patch('/api/reviews/3')
+        .send({"inc_votes": "cat"})
+        .expect(400)
+        .send((response) => {
+            const msg = response.body.msg
+            expect(msg).toBe('bad request')
+        })
+    });
+    test('400: non existing property on request body', () => {
+        return request(app)
+        .patch('/api/reviews/1')
+        .send({
+            inc_votes: 2,
+            other_property: "some category text"
+        })
+        .expect(400)
+        .send((response) => {
+            const msg = response.body.msg
+            expect(msg).toBe('bad request')
+        })
+    });
 })
