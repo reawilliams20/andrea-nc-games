@@ -16,7 +16,7 @@ exports.selectReviews = (category, sort_by="created_at", order="desc") => {
     const queryArr = []
     if (category !== undefined) {
         if (!validCategoryQueries.includes(category)) {
-            return Promise.reject({status: 400, msg: 'bad request'})
+            return Promise.reject({status: 404, msg: 'Not found'})
         } else {
             queryString += ` WHERE category = $1 `
             queryArr.push(category)

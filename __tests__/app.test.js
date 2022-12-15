@@ -449,13 +449,13 @@ describe('GET /api/reviews QUERIES', () => {
             })
         })
     })
-    test('400: invalid category query', () => {
+    test('404: invalid category query', () => {
         return request(app)
         .get('/api/reviews?category=scary')
-        .expect(400)
+        .expect(404)
         .then((response) => {
             const msg = response.body.msg
-            expect(msg).toBe('bad request')
+            expect(msg).toBe('Not found')
         })
     })
     test('200: category valid but no results', () => {
