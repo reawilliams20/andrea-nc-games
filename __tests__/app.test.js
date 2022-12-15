@@ -417,3 +417,71 @@ describe('/api/users', () => {
         })
     });
 });
+
+
+describe('GET /api/reviews QUERIES', () => {
+    test('200: accepts sort_by query; should return title desc', () => {
+        return request(app)
+        .get('/api/reviews?sort_by=title')
+        .expect(200)
+        .then(({body: {reviews}}) => {
+            expect(reviews).toBeSortedBy('title', {descending: true})
+        })
+    })
+    test('400: invalid sort_by query', () => {
+        return request(app)
+        .get('/api/reviews?sort_by=hello')
+        .expect(400)
+        .then((response) => {
+            const msg = response.body.msg
+            expect(msg).toBe('bad request')
+        })
+    })
+    test('200: accepts category query; should return category desc', () => {
+        return request(app)
+        .get('/api/reviews?category=dexterity')
+        .expect(200)
+        .then(({body: {reviews}}) => {
+            expect(reviews).toBeSortedBy('created_at', {descending: true})
+            expect(reviews).toHaveLength(1);
+            reviews.forEach((review) => {
+                expect(review.category).toBe("dexterity")
+            })
+        })
+    })
+    test('404: invalid category query', () => {
+        return request(app)
+        .get('/api/reviews?category=scary')
+        .expect(404)
+        .then((response) => {
+            const msg = response.body.msg
+            expect(msg).toBe('Not found')
+        })
+    })
+    test('200: category valid but no results', () => {
+        return request(app)
+        .get("/api/reviews?category=children's games")
+        .expect(200)
+        .then(({body: {reviews}}) => {
+            expect(reviews).toEqual([])
+        })
+    })
+    test('200: accepts order query; should return reviews in specified order', () => {
+        return request(app)
+        .get('/api/reviews?order=asc')
+        .expect(200)
+        .then(({body: {reviews}}) => {
+            expect(reviews).toBeSortedBy('created_at')
+        })
+    })
+    test('400: invalid order query', () => {
+        return request(app)
+        .get('/api/reviews?order=hello')
+        .expect(400)
+        .then((response) => {
+            const msg = response.body.msg
+            expect(msg).toBe('bad request')
+        })
+    })
+    
+})
