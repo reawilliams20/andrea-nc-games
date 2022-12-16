@@ -24,8 +24,8 @@ describe('GET /api', () => {
         return request(app)
         .get('/api')
         .expect(200)
-        .then(({body : {endpoints}}) => {
-            expect(endpoints).toBeInstanceOf(Object)
+        .then(({body}) => {
+            expect(body).toBeInstanceOf(Object)
         })
     })
 });
