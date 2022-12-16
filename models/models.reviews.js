@@ -82,11 +82,3 @@ exports.patchReview = (updateReview, review_id) => {
     }
     return result.rows[0]})
 }
-
-exports.selectUsers = () => {
-    return db.query(`
-    SELECT * FROM users;`)
-    .then((result) => {
-        return result.rows;
-    })
-}
