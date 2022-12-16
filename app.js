@@ -12,6 +12,7 @@ app.use(express.json());
 app.get('/api/categories', getCategories);
 
 app.get('/api/users', getUsers);
+
 app.get('/api/reviews', getReviews);
 
 app.get('/api/reviews/:review_id', getReview);
