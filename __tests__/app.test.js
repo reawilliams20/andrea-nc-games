@@ -19,6 +19,17 @@ describe('/api for all non-existent routes in app', () => {
     })
 });
 
+describe('GET /api', () => {
+    test('200: responds with object of different endpoints', () => {
+        return request(app)
+        .get('/api')
+        .expect(200)
+        .then(({body : {endpoints}}) => {
+            expect(endpoints).toBeInstanceOf(Object)
+        })
+    })
+});
+
 describe('/api/categories', () => {
     test('200: OK, returns with categories', () => {
         return request(app)

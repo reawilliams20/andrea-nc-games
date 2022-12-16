@@ -3,11 +3,14 @@ const {getCategories} = require("./controllers/controllers.categories");
 const {getReviews, getReview, getReviewComments,postComment, updateReview} = require("./controllers/controllers.reviews");
 const {deleteComment} = require("./controllers/controllers.comments");
 const {getUsers} = require("./controllers/controllers.users");
+const {getEndpoints} = require("./endpoints");
 const {handle404Routes, handle400Error, handle500Error, handle404Error} = require("./error-handling");
 
 const app = express();
 
 app.use(express.json());
+
+app.get('/api', getEndpoints);
 
 app.get('/api/categories', getCategories);
 
