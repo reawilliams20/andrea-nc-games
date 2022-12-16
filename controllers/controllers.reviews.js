@@ -1,4 +1,4 @@
-const {selectReviews, selectReview, selectReviewComments, insertComment, patchReview, selectUsers, removeComment} = require("../models/models.reviews");
+const {selectReviews, selectReview, selectReviewComments, insertComment, patchReview} = require("../models/models.reviews");
 
 exports.getReviews = (req, res, next) => {
     const {category, sort_by, order} = req.query
@@ -51,27 +51,6 @@ exports.updateReview = (req, res, next) => {
     patchReview(updateReview, review_id)
     .then((review) => {
         res.status(200).send({review})
-    })
-    .catch((err) => {
-        next(err);
-    })
-}
-
-exports.getUsers = (req, res, next) => {
-    selectUsers()
-    .then((users) => {
-        res.status(200).send({users})
-    })
-    .catch((err) => {
-        next(err);
-    })
-}
-
-exports.deleteComment = (req, res, next) => {
-    const comment_id = req.params.comment_id
-    removeComment(comment_id)
-    .then((comment) => {
-        res.status(204).send({comment})
     })
     .catch((err) => {
         next(err);

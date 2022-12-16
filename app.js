@@ -1,7 +1,9 @@
 const express = require("express");
-const {getCategories} = require("./controllers/controllers.categories")
-const {getReviews, getReview, getReviewComments,postComment, updateReview, getUsers, deleteComment} = require("./controllers/controllers.reviews");
-const {handle404Routes, handle400Error, handle500Error, handle404Error} = require("./error-handling")
+const {getCategories} = require("./controllers/controllers.categories");
+const {getReviews, getReview, getReviewComments,postComment, updateReview} = require("./controllers/controllers.reviews");
+const {deleteComment} = require("./controllers/controllers.comments");
+const {getUsers} = require("./controllers/controllers.users");
+const {handle404Routes, handle400Error, handle500Error, handle404Error} = require("./error-handling");
 
 const app = express();
 
