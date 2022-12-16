@@ -10,6 +10,10 @@ const app = express();
 
 app.use(express.json());
 
+app.get('/', (req, res) => {
+    res.send("WELCOME TO ANDREA'S GAMES API!!")
+  })
+
 app.get('/api', getEndpoints);
 
 app.get('/api/categories', getCategories);
