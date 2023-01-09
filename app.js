@@ -5,9 +5,11 @@ const {deleteComment} = require("./controllers/controllers.comments");
 const {getUsers} = require("./controllers/controllers.users");
 const {getEndpoints} = require("./endpoints");
 const {handle404Routes, handle400Error, handle500Error, handle404Error} = require("./error-handling");
+const cors = require('cors');
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
